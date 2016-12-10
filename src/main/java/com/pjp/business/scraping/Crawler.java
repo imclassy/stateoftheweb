@@ -1,5 +1,7 @@
 package com.pjp.business.scraping;
 
+import com.pjp.business.core.Link;
+import com.pjp.data.config.dao.LinksDAO;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -15,23 +17,27 @@ import java.util.Set;
  */
 public class Crawler {
     private final UrlValidator urlValidator;
-    public Crawler(){
+    private final LinksDAO linksDAO;
+    public Crawler(LinksDAO linksDAO){
+        this.linksDAO = linksDAO;
         urlValidator = new UrlValidator();
     }
     public void crawl(String startingUrl) throws IOException {
 
         Queue<String> pendingPages = new LinkedList<>();
         pendingPages.add(startingUrl);
-        Set<String> visited = new HashSet<>();
 
         while(!pendingPages.isEmpty()){
             String url = pendingPages.poll();
-            if(!visited.contains(url)){
+            if(!linksDAO.existsByUrl(url)){
                 System.out.println("Visiting url: " + url);
                 Document doc = Jsoup.connect(url)
                         .timeout(10*1000)
                         .userAgent("Mozilla/17.0")
                         .get();
+                Link link = new Link();
+                link.setUrl(url);
+                linksDAO.save(link);
                 pendingPages.addAll(extractLinks(doc));
             }
         }
@@ -41,7 +47,7 @@ public class Crawler {
         Set<String> links = new HashSet<>();
         Elements cssLinks  = doc.select("a");
         cssLinks.stream()
-                .map(link -> link.absUrl("href"))
+                .map(a -> a.absUrl("href"))
                 .filter(urlValidator::isValid)
                 .forEach(links::add);
         return links;
