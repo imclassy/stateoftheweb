@@ -5,13 +5,13 @@ import java.sql.Timestamp;
 /**
  * Created by Elias on 08/12/2016.
  */
-public class Link {
+public abstract class Link {
     public static final String SEED_TYPE = "seed";
     public static final String NORMAL_TYPE = "normal";
-    private int id;
-    private String url;
-    private Timestamp lastVisited;
-    private String type;
+    protected int id;
+    protected String url;
+    protected Timestamp lastVisited;
+    protected String type;
 
     public int getId() {
         return id;

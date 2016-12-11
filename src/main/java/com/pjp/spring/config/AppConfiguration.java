@@ -1,4 +1,4 @@
-package com.pjp.data.config;
+package com.pjp.spring.config;
 
 import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 
 // Load to Environment.
-@PropertySources({ @PropertySource("classpath:ds/datasource-cfg.properties") })
+@PropertySources({ @PropertySource("classpath:datasource-cfg.properties") })
 
 public class AppConfiguration {
 
